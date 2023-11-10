@@ -1,55 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Register and Leave a Comment</title>
-<style>
-    #register-form {
-        margin: 20px;
-    }
-    #comment-form {
-        margin: 20px;
-    }
-    #comments {
-        margin: 20px;
-    }
-</style>
-<script>
-    function register() {
-        var username = document.getElementById("username").value;
-        sessionStorage.setItem("username", username);
-        document.getElementById("register-form").style.display = "none";
-        document.getElementById("comment-form").style.display = "block";
-    }
-
-    function leaveComment() {
-        var comment = document.getElementById("comment").value;
-        var username = sessionStorage.getItem("username");
-        var commentElement = document.createElement("p");
-        commentElement.innerHTML = "<strong>" + username + ": </strong>" + comment;
-        document.getElementById("comments").appendChild(commentElement);
-        document.getElementById("comment").value = "";
-    }
-</script>
+    <title>注册账号和留言</title>
 </head>
 <body>
-    <h1>Register and Leave a Comment</h1>
+    <!-- 注册表单 -->
+    <h2>注册账号</h2>
+    <form id="registrationForm">
+        <div>
+            <label for="username">账号名称:</label>
+            <input type="text" id="username" name="username">
+        </div>
+        <div>
+            <label for="password">密码:</label>
+            <input type="password" id="password" name="password">
+        </div>
+        <div>
+            <input type="submit" value="注册">
+        </div>
+    </form>
 
-    <div id="register-form">
-        <h2>Register</h2>
-        <label for="username">Username:</label>
-        <input type="text" id="username" required><br>
-        <button onclick="register()">Register</button>
-    </div>
+    <hr>
 
-    <div id="comment-form" style="display: none;">
-        <h2>Leave a Comment</h2>
-        <label for="comment">Comment:</label>
-        <textarea id="comment" required></textarea><br>
-        <button onclick="leaveComment()">Comment</button>
-    </div>
+    <!-- 留言表单 -->
+    <h2>留言</h2>
+    <form id="commentForm" onsubmit="submitComment(event)">
+        <div>
+            <label for="comment">留言内容:</label>
+            <input type="text" id="comment" name="comment">
+        </div>
+        <div>
+            <input type="submit" value="发表留言">
+        </div>
+    </form>
 
-    <div id="comments">
-        <h2>Comments</h2>
-    </div>
+    <!-- 显示留言 -->
+    <h2>留言板</h2>
+    <div id="comments"></div>
+
+    <script>
+        // 注册账号表单提交事件处理
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // 阻止默认表单提交行为
+
+            // 获取输入的用户名和密码
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // 在此处进行注册账号的相关处理，如验证、存储到数据库等
+
+            console.log('账号注册成功！');
+        });
+
+        // 留言表单提交事件处理
+        function submitComment(event) {
+            event.preventDefault(); // 阻止默认表单提交行为
+
+            // 获取输入的留言内容
+            var comment = document.getElementById('comment').value;
+
+            // 在此处进行留言的相关处理，如存储到数据库等
+
+            // 创建新留言的HTML元素
+            var commentElement = document.createElement('p');
+            commentElement.innerText = comment;
+
+            // 将留言添加到留言板上
+            document.getElementById('comments').appendChild(commentElement);
+
+            // 清空留言输入框
+            document.getElementById('comment').value = '';
+
+            console.log('留言成功！');
+        }
+    </script>
 </body>
 </html>
+
