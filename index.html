@@ -1,25 +1,68 @@
+
+```html
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>红色字体黑色背景</title>
-    <style>
-        body {
-            background-color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .text {
-            color: red;
-            font-size: 24px;
-        }
-    </style>
+  <title>留言板</title>
+  <style>
+     #messageContainer {
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #f2f2f2;
+    }
+    #messageContainer p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      resize: none;
+    }
+    button {
+      padding: 5px 10px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="text">犯我中华者，虽远必诛</div>
+  <h1>留言板</h1>
+  <div id="messageContainer"></div>
+
+  <h2>发表留言</h2>
+  <form id="messageForm">
+    <textarea id="messageInput" placeholder="请输入留言内容"></textarea>
+    <br>
+    <button type="submit">提交</button>
+  </form>
+
+  <script>
+    // 获取留言表单和留言容器
+    const messageForm = document.getElementById('messageForm');
+    const messageContainer = document.getElementById('messageContainer');
+
+    // 留言提交事件
+    messageForm.addEventListener('submit', function(event) {
+      event.preventDefault(); // 阻止表单默认提交行为
+
+      // 创建新的留言容器及段落元素
+      const newMessageContainer = document.createElement('div');
+      const newMessageText = document.createElement('p');
+
+      // 获取输入框的值并设置为段落文本
+      const messageInput = document.getElementById('messageInput');
+      newMessageText.textContent = messageInput.value;
+
+      // 将段落元素添加到留言容器中
+      newMessageContainer.appendChild(newMessageText);
+
+      // 将留言容器添加到留言容器外部
+      messageContainer.appendChild(newMessageContainer);
+
+      // 清空输入框内容
+      messageInput.value = '';
+    });
+  </script>
 </body>
 </html>
