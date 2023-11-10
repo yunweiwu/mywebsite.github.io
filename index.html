@@ -1,68 +1,55 @@
-
-```html
 <!DOCTYPE html>
 <html>
 <head>
-  <title>留言板</title>
-  <style>
-     #messageContainer {
-      padding: 10px;
-      margin-bottom: 10px;
-      background-color: #f2f2f2;
+<title>Register and Leave a Comment</title>
+<style>
+    #register-form {
+        margin: 20px;
     }
-    #messageContainer p {
-      margin: 0;
-      font-size: 14px;
-      font-weight: bold;
+    #comment-form {
+        margin: 20px;
     }
-    textarea {
-      width: 100%;
-      height: 100px;
-      resize: none;
+    #comments {
+        margin: 20px;
     }
-    button {
-      padding: 5px 10px;
-      margin-top: 10px;
+</style>
+<script>
+    function register() {
+        var username = document.getElementById("username").value;
+        sessionStorage.setItem("username", username);
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("comment-form").style.display = "block";
     }
-  </style>
+
+    function leaveComment() {
+        var comment = document.getElementById("comment").value;
+        var username = sessionStorage.getItem("username");
+        var commentElement = document.createElement("p");
+        commentElement.innerHTML = "<strong>" + username + ": </strong>" + comment;
+        document.getElementById("comments").appendChild(commentElement);
+        document.getElementById("comment").value = "";
+    }
+</script>
 </head>
 <body>
-  <h1>留言板</h1>
-  <div id="messageContainer"></div>
+    <h1>Register and Leave a Comment</h1>
 
-  <h2>发表留言</h2>
-  <form id="messageForm">
-    <textarea id="messageInput" placeholder="请输入留言内容"></textarea>
-    <br>
-    <button type="submit">提交</button>
-  </form>
+    <div id="register-form">
+        <h2>Register</h2>
+        <label for="username">Username:</label>
+        <input type="text" id="username" required><br>
+        <button onclick="register()">Register</button>
+    </div>
 
-  <script>
-    // 获取留言表单和留言容器
-    const messageForm = document.getElementById('messageForm');
-    const messageContainer = document.getElementById('messageContainer');
+    <div id="comment-form" style="display: none;">
+        <h2>Leave a Comment</h2>
+        <label for="comment">Comment:</label>
+        <textarea id="comment" required></textarea><br>
+        <button onclick="leaveComment()">Comment</button>
+    </div>
 
-    // 留言提交事件
-    messageForm.addEventListener('submit', function(event) {
-      event.preventDefault(); // 阻止表单默认提交行为
-
-      // 创建新的留言容器及段落元素
-      const newMessageContainer = document.createElement('div');
-      const newMessageText = document.createElement('p');
-
-      // 获取输入框的值并设置为段落文本
-      const messageInput = document.getElementById('messageInput');
-      newMessageText.textContent = messageInput.value;
-
-      // 将段落元素添加到留言容器中
-      newMessageContainer.appendChild(newMessageText);
-
-      // 将留言容器添加到留言容器外部
-      messageContainer.appendChild(newMessageContainer);
-
-      // 清空输入框内容
-      messageInput.value = '';
-    });
-  </script>
+    <div id="comments">
+        <h2>Comments</h2>
+    </div>
 </body>
 </html>
