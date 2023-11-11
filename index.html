@@ -1,47 +1,32 @@
-<!DOCTYPE html>
 <html>
 <head>
-	<title>留言板</title>
+    <title>Login</title>
 </head>
 <body>
-	<h1>留言板</h1>
-	<form id="loginForm" method="post" action="message.php">
-		<label for="password">密码:</label>
-		<input type="password" id="password" name="password">
-		<input type="submit" value="登录">
-	</form>
-
-	<?php
-	if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["password"] == "123456") {
-		echo "<h2>留言</h2>";
-		echo "<form id='messageForm' method='post' action='message.php'>";
-		echo "<textarea rows='4' cols='50' name='message' required></textarea>";
-		echo "<br>";
-		echo "<input type='submit' value='提交'>";
-		echo "</form>";
-	}
-
-	if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["password"] != "123456") {
-		echo "<h3>密码错误，请重新登录</h3>";
-	}
-
-	if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["message"])) {
-		$messageFile = fopen("messages.txt", "a");
-		fwrite($messageFile, $_POST["message"] . "\n");
-		fclose($messageFile);
-	}
-
-	if (file_exists("messages.txt")) {
-		$messageFile = fopen("messages.txt", "r");
-		while (!feof($messageFile)) {
-			$message = fgets($messageFile);
-			if (!empty($message)) {
-				echo "<p>$message</p>";
-			}
-		}
-		fclose($messageFile);
-	}
-	?>
-
+    <h1>Login</h1>
+    
+    <form id="loginForm" action="login.html" method="post">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br><br>
+        <input type="submit" value="Login">
+    </form>
+    
+    <script>
+        // Add event listener to the form submission
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+            
+            // Check if the password entered is correct
+            if(document.getElementById("password").value === "12345") {
+                // Redirect to the login.html file
+                window.location.href = "chat.html";
+            } else {
+                // Display an error message
+                alert("Incorrect password. Please try again.");
+            }
+        });
+    </script>
 </body>
 </html>
