@@ -1,70 +1,101 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>留言板</title>
+    <style>
+        .comment {
+            margin-bottom: 10px;
+        }
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>留言板</h1>
-    
-    <form>
-        <textarea id="message" rows="4" cols="50"></textarea><br>
-        <button type="button" onclick="addMessage()">提交</button>
+    <form id="comment-form">
+        <textarea id="comment-input" placeholder="请输入留言内容"></textarea><br>
+        <button type="submit">提交</button>
     </form>
-    
-    <div id="messageList"></div>
+
+    <div id="comments">
+        <!-- 这里会动态添加留言 -->
+    </div>
 
     <script>
-        // 添加留言
-        function addMessage() {
-            var message = document.getElementById("message").value;
-            
-            // 检查是否存在已保存的留言
-            var storedMessages = localStorage.getItem("messageList");
-            var storedMessagesArray = JSON.parse(storedMessages);
-            
-            // 如果没有已保存的留言，则创建新的数组存储留言
-            if (!storedMessagesArray) {
-                storedMessagesArray = [];
-            }
-            
-            // 添加新的留言到数组
-            storedMessagesArray.push(message);
-            
-            // 保存数组到本地存储
-            localStorage.setItem("messageList", JSON.stringify(storedMessagesArray));
-            
-            // 清空留言框
-            document.getElementById("message").value = "";
-            
-            // 更新留言列表
-            updateMessageList();
+        // 检查本地存储是否有留言数据
+        var comments = JSON.parse(localStorage.getItem('comments')) || [];
+
+        // 在页面加载时渲染留言
+        renderComments();
+
+        // 表单提交事件处理程序
+        document.getElementById('comment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 获取用户输入的留言内容
+            var commentContent = document.getElementById('comment-input').value;
+
+            // 创建一个包含留言内容和删除按钮的对象
+            var comment = {
+                content: commentContent,
+                id: Date.now() // 使用时间戳作为留言的唯一ID
+            };
+
+            // 将新留言添加到留言数组
+            comments.push(comment);
+
+            // 保存留言到本地存储
+            localStorage.setItem('comments', JSON.stringify(comments));
+
+            // 清空输入框
+            document.getElementById('comment-input').value = '';
+
+            // 渲染留言
+            renderComments();
+        });
+
+        // 渲染留言函数
+        function renderComments() {
+            var commentsDiv = document.getElementById('comments');
+            commentsDiv.innerHTML = '';
+
+            // 遍历留言数组
+            comments.forEach(function(comment) {
+                var commentContainer = document.createElement('div');
+                commentContainer.classList.add('comment');
+
+                var commentText = document.createElement('span');
+                commentText.textContent = comment.content;
+                commentContainer.appendChild(commentText);
+
+                var commentDeleteBtn = document.createElement('span');
+                commentDeleteBtn.classList.add('delete-btn');
+                commentDeleteBtn.textContent = '删除';
+                commentDeleteBtn.addEventListener('click', function() {
+                    deleteComment(comment.id);
+                });
+                commentContainer.appendChild(commentDeleteBtn);
+
+                commentsDiv.appendChild(commentContainer);
+            });
         }
-        
-        // 更新留言列表
-        function updateMessageList() {
-            // 获取本地存储的留言数组
-            var storedMessages = localStorage.getItem("messageList");
-            var storedMessagesArray = JSON.parse(storedMessages);
-            
-            // 清空留言列表
-            document.getElementById("messageList").innerHTML = "";
-            
-            // 遍历留言数组并显示在页面上
-            if (storedMessagesArray) {
-                for (var i = 0; i < storedMessagesArray.length; i++) {
-                    var message = storedMessagesArray[i];
-                    
-                    // 创建留言元素
-                    var messageElement = document.createElement("p");
-                    messageElement.innerHTML = message;
-                    
-                    // 添加留言元素到留言列表
-                    document.getElementById("messageList").appendChild(messageElement);
-                }
-            }
+
+        // 删除留言函数
+        function deleteComment(commentId) {
+            // 在留言数组中找到指定ID的留言，并删除
+            comments = comments.filter(function(comment) {
+                return comment.id !== commentId;
+            });
+
+            // 保存更新后的留言到本地存储
+            localStorage.setItem('comments', JSON.stringify(comments));
+
+            // 重新渲染留言
+            renderComments();
         }
-        
-        // 页面加载时更新留言列表
-        updateMessageList();
     </script>
 </body>
 </html>
