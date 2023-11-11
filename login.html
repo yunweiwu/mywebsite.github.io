@@ -1,194 +1,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>User Registration and Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        .container {
-            width: 300px;
-            margin: 0 auto;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-        }
-
-        .form-group button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        #messages {
-            margin-top: 20px;
-        }
-
-        .message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #CCC;
-        }
-
-        .message__user {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .delete-message-button {
-            margin-top: 5px;
-            background-color: #FF0000;
-            color: white;
-            padding: 5px;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+    <title>留言板</title>
 </head>
 <body>
-    <h1>User Registration and Login</h1>
-    <div class="container">
-        <form id="registration-form">
-            <h2>Register</h2>
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Register</button>
-            </div>
-        </form>
-        <form id="login-form">
-            <h2>Login</h2>
-            <div class="form-group">
-                <label for="login-username">Username</label>
-                <input type="text" id="login-username" required>
-            </div>
-            <div class="form-group">
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Login</button>
-            </div>
-        </form>
-        <div id="messages">
-            <h2>Messages</h2>
-            <div id="message-list"></div>
-        </div>
-        <form id="message-form">
-            <h2>Leave a Message</h2>
-            <div class="form-group">
-                <label for="message">Message</label>
-                <input type="text" id="message" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
+    <h1>注册</h1>
+    <form id="register-form">
+        <label for="username">用户名:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">密码:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="submit" value="注册">
+    </form>
+
+    <h1>登录</h1>
+    <form id="login-form">
+        <label for="login-username">用户名:</label>
+        <input type="text" id="login-username" name="username" required><br><br>
+        <label for="login-password">密码:</label>
+        <input type="password" id="login-password" name="password" required><br><br>
+        <input type="submit" value="登录">
+    </form>
+
+    <h1>留言</h1>
+    <form id="message-form">
+        <textarea id="message" name="message" required></textarea><br><br>
+        <input type="submit" value="发表留言">
+    </form>
+
+    <h1>留言列表</h1>
+    <div id="message-list"></div>
 
     <script>
-        let users = [];
-        let loggedInUser = null;
-        let messages = [];
-
-        document.getElementById('registration-form').addEventListener('submit', function(event) {
+        // 注册功能
+        document.getElementById('register-form').addEventListener('submit', function (event) {
             event.preventDefault();
-            let username = document.getElementById('username').value;
-            let password = document.getElementById('password').value;
-            let user = { username: username, password: password };
-            users.push(user);
-            alert('Registration Successful!');
-            document.getElementById('registration-form').reset();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // 保存用户名和密码到本地存储
+            localStorage.setItem(username, password);
+
+            alert('注册成功！');
+
+            // 清空表单
+            document.getElementById('register-form').reset();
         });
 
-        document.getElementById('login-form').addEventListener('submit', function(event) {
+        // 登录功能
+        document.getElementById('login-form').addEventListener('submit', function (event) {
             event.preventDefault();
-            let username = document.getElementById('login-username').value;
-            let password = document.getElementById('login-password').value;
-            
-            let user = users.find(u => u.username === username && u.password === password);
-            if (user) {
-                loggedInUser = user;
-                alert('Login Successful!');
+            var username = document.getElementById('login-username').value;
+            var password = document.getElementById('login-password').value;
+
+            // 检查用户名和密码是否匹配
+            if (localStorage.getItem(username) === password) {
+                alert('登录成功！');
+
+                // 清空表单
                 document.getElementById('login-form').reset();
-                document.getElementById('username').disabled = true;
-                document.getElementById('password').disabled = true;
-                document.getElementById('login-username').disabled = true;
-                document.getElementById('login-password').disabled = true;
-                document.getElementById('registration-form').style.display = 'none';
-                document.getElementById('login-form').style.display = 'none';
             } else {
-                alert('Invalid username or password!');
+                alert('用户名或密码错误！');
             }
         });
 
-        document.getElementById('message-form').addEventListener('submit', function(event) {
+        // 发表留言功能
+        document.getElementById('message-form').addEventListener('submit', function (event) {
             event.preventDefault();
-            let messageContent = document.getElementById('message').value;
-            let message = { user: loggedInUser, content: messageContent };
-            messages.push(message);
-            displayMessages();
+            var message = document.getElementById('message').value;
+
+            // 获取当前用户的用户名
+            var currentUser = getCurrentUser();
+
+            // 添加留言到列表
+            var messageElement = document.createElement('p');
+            messageElement.innerHTML = '[' + currentUser + '] ' + message;
+            document.getElementById('message-list').appendChild(messageElement);
+
+            // 清空表单
             document.getElementById('message-form').reset();
         });
 
-        function displayMessages() {
-            let messageList = document.getElementById('message-list');
-            messageList.innerHTML = '';
-
-            for (let i = 0; i < messages.length; i++) {
-                let message = messages[i];
-                let messageElement = document.createElement('div');
-                messageElement.classList.add('message');
-                
-                let userElement = document.createElement('div');
-                userElement.classList.add('message__user');
-                userElement.textContent = 'User: ' + message.user.username;
-                messageElement.appendChild(userElement);
-                
-                let contentElement = document.createElement('div');
-                contentElement.textContent = 'Message: ' + message.content;
-                messageElement.appendChild(contentElement);
-
-                if (loggedInUser === message.user) {
-                    let deleteButton = document.createElement('button');
-                    deleteButton.classList.add('delete-message-button');
-                    deleteButton.textContent = 'Delete';
-                    deleteButton.addEventListener('click', function() {
-                        messages.splice(i, 1);
-                        displayMessages();
-                    });
-                    messageElement.appendChild(deleteButton);
-                }
-
-                messageList.appendChild(messageElement);
+        // 删除留言功能
+        document.getElementById('message-list').addEventListener('click', function (event) {
+            if (event.target.tagName === 'P') {
+                event.target.parentNode.removeChild(event.target);
             }
+        });
+
+        // 获取当前用户的用户名
+        function getCurrentUser() {
+            var username = document.getElementById('login-username').value;
+            return username;
         }
     </script>
 </body>
