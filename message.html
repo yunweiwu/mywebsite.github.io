@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>留言板</title>
+    <script>
+        function addMessage() {
+            var message = document.getElementById("message").value;
+            var username = localStorage.getItem("username");
+            var messages = JSON.parse(localStorage.getItem("messages") || "[]");
+            messages.push({ "username": username, "message": message });
+            localStorage.setItem("messages", JSON.stringify(messages));
+            displayMessages();
+            document.getElementById("message").value = "";
+        }
+
+        function deleteMessage(index) {
+            var messages = JSON.parse(localStorage.getItem("messages"));
+            messages.splice(index, 1);
+            localStorage.setItem("messages", JSON.stringify(messages));
+            displayMessages();
+        }
+
+        function displayMessages() {
+            var messageContainer = document.getElementById("messageContainer");
+            messageContainer.innerHTML = "";
+            var messages = JSON.parse(localStorage.getItem("messages") || "[]");
+            for (var i = 0; i < messages.length; i++) {
+                var div = document.createElement("div");
+                var messageText = document.createTextNode(messages[i].username + ": " + messages[i].message);
+                div.appendChild(messageText);
+                var deleteButton = document.createElement("button");
+                deleteButton.innerHTML = "删除";
+                deleteButton.setAttribute("onclick", "deleteMessage(" + i + ")");
+                div.appendChild(deleteButton);
+                messageContainer.appendChild(div);
+            }
+        }
+    </script>
+</head>
+
+<body onload="displayMessages()">
+    <h2>留言板</h2>
+    <form>
+        <textarea id="message" rows="4" cols="50" required></textarea><br>
+        <input type="button" value="提交留言" onclick="addMessage()">
+    </form>
+    <div id="messageContainer"></div>
+</body>
+</html>
